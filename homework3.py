@@ -22,7 +22,7 @@ def BFS(entry_point, exit_point, n, actions, maze_size):
     entry_point.append(0)
     queue.append(([entry_point], 0, 1))
     #record the points that has been visited already
-    visited = []
+    visited = set()
 
     #f1 = open("output.txt", "a")
     while queue:
@@ -33,9 +33,9 @@ def BFS(entry_point, exit_point, n, actions, maze_size):
         cur_cost = tmp[1]
         cur_steps = tmp[2]
         #store the visited grid
-        if cur_point in visited:
+        if tuple(cur_point) in visited:
             continue
-        visited.append(cur_point)
+        visited.add(tuple(cur_point))
 
         #if arrived at the exit, compare the cost with the previous path
         if cur_point == exit_point:
@@ -72,7 +72,7 @@ def BFS(entry_point, exit_point, n, actions, maze_size):
                 point[2] += dz[idx]
                 #make sure the grid is in the maze
                 if point[0] <= maze_size[0] and point[1] <= maze_size[1] and point[2] <= maze_size[2]:
-                    if point not in visited:
+                    if tuple(point) not in visited:
                         point.append(1)
                         path.append(point)
                         queue.append((path, cur_cost, cur_steps))
@@ -92,7 +92,7 @@ def UCS(entry_point, exit_point, n, actions, maze_size):
     entry_point.append(0)
     heapq.heappush(heap, (0, [entry_point], 1))
     #record the points that has been visited already
-    visited = []
+    visited = set()
 
     while heap:
         tmp = heapq.heappop(heap)
@@ -101,9 +101,9 @@ def UCS(entry_point, exit_point, n, actions, maze_size):
         cur_path = tmp[1][:]
         cur_point = cur_path[-1][0:3][:]
         steps = tmp[2]
-        if cur_point in visited:
+        if tuple(cur_point) in visited:
             continue
-        visited.append(cur_point)
+        visited.add(tuple(cur_point))
 
         if cur_point == exit_point:
             if cost < curmin:
@@ -152,7 +152,7 @@ def UCS(entry_point, exit_point, n, actions, maze_size):
                     move_cost = 14
                 if point[0] <= maze_size[0] and point[1] <= maze_size[1] and point[2] <= maze_size[2]:
                     #reject the visited node to avoid loop
-                    if point not in visited:
+                    if tuple(point) not in visited:
                         path_cost += move_cost
                         point.append(move_cost)
                         path.append(point)
@@ -173,7 +173,7 @@ def A_star(entry_point, exit_point, n, actions, maze_size):
     entry_point.append(0)
     heapq.heappush(heap, (0, 0, [entry_point], 1))
     #record the points that has been visited already
-    visited = []
+    visited = set()
 
     #function to get h(n)
     def Heuristics(exit_point, grid):
@@ -187,9 +187,9 @@ def A_star(entry_point, exit_point, n, actions, maze_size):
         cur_path = tmp[2][:]
         cur_point = cur_path[-1][0:3][:]
         steps = tmp[3]
-        if cur_point in visited:
+        if tuple(cur_point) in visited:
             continue
-        visited.append(cur_point)
+        visited.add(tuple(cur_point))
 
         if cur_point == exit_point:
             if cost < curmin:
@@ -241,7 +241,7 @@ def A_star(entry_point, exit_point, n, actions, maze_size):
                 cur_f = path_cost+Heuristics(exit_point, point)
                 if point[0] <= maze_size[0] and point[1] <= maze_size[1] and point[2] <= maze_size[2]:
                     #reject the visited node to avoid loop
-                    if point not in visited:
+                    if tuple(point) not in visited:
                         point.append(move_cost)
                         path.append(point)
                         heapq.heappush(heap, (cur_f, path_cost, path, steps))
